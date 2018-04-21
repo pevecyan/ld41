@@ -4,11 +4,12 @@ class Character {
         this.allCards = [];
         this.usedCards = [];
 
+        let bodyAttachments =  [{position:{x:0,y:30}, rotation:0}];
 
         this.body = this.addCard(new Head(0,0,'head2',[
-            this.addCard(new Tail(0,50,'tail2'),'tail2'),
+            this.addCard(new Tail(bodyAttachments[0],'tail2'),'tail2'),
             //new Eye(0,-20, 'eyeProto')
-        ]),'head2');
+        ],bodyAttachments),'head2');
 
         
         this.position = {x:100,y:100}
@@ -41,7 +42,12 @@ class Character {
         let id = type+new Date().getTime();
         this.allCards.push({id, card:AllCards.Cards[type]});
         this.usedCards.push({id, card:AllCards.Cards[type]});
+        item.id = id;
         return item
+    }
+
+    useExistingCard(item){
+        this.usedCards.push(item);
     }
 
     handleControls(movements){
