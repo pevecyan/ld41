@@ -8,6 +8,8 @@ class Character {
             new Eye(0,-20, 'eyeProto')
         ]);
 
+        
+
         this.position = {x:100,y:100}
         this.rotation = 0;
         this.editMode = false;
@@ -34,6 +36,7 @@ class Character {
         pop();
     }
 
+    
 
     handleControls(movements){
         
