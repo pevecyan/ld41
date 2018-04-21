@@ -56,12 +56,11 @@ class Tail extends BodyPart{
             this.rotation += deltaRotation*(1.5+Math.random()*2);
             
         }
-        this.rotation = Math.min(1, Math.max(-1, this.rotation)) ;
+        this.rotation = Math.min(1, Math.max(-1, this.rotation));
         
         
-        rotate(this.rotation);
+        rotate(this.rotation + this.parentAttachPoint.rotation);
         this.translateSprite(this.type.attachPoint.x, this.type.attachPoint.y);
-        
         this.handleOverlap()
         
 
