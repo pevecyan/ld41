@@ -43,7 +43,7 @@ class Head extends BodyPart{
     }
 
     handleOverlap(){
-        if (this.collider){
+        if (this.collider && this.parts.length == 0){
             if (this.collider.overlap(this.sprite)){
                 this.onColliderOverlap(this);
                 this.onMouseOver();
@@ -58,7 +58,6 @@ class Head extends BodyPart{
         this.collider = collider;
         this.onColliderOverlap = onColliderOverlap;
         this.parts.forEach(p=>{
-            
             p.updateCollider(collider, onColliderOverlap);
         })
     }
