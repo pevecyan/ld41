@@ -3,9 +3,11 @@ class BattleScene extends Scene{
     constructor(character){
         super();
         this.character = character;
-               
-        this.card = new Card(0,0,0,"card");
-
+        this.Cards = [];
+        for(var i = 0; i < this.character.usedCards.length; i++){
+            var c = this.character.usedCards[i];
+            this.Cards.push(new Card(this.character.usedCards[i].card, i));
+        }
     }
 
     loaded(){
@@ -17,6 +19,8 @@ class BattleScene extends Scene{
         fill('#c96168');
         rect(0,0, this.width(), this.height());
 
-        this.card.draw();
+        for(var i = 0; i < this.character.usedCards.length; i++){
+            this.Cards[i].draw();
+        }
     }
 }
