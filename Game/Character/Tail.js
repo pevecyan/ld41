@@ -11,6 +11,7 @@ class Tail extends BodyPart{
 
         this.sprite = createSprite(0,0);
         this.sprite.addImage(loadImage(this.type.asset));
+        this.sprite.debug = true;
 
         this.position = {x,y};
         this.rotation = 0;
@@ -18,14 +19,27 @@ class Tail extends BodyPart{
         this.parts = parts;
 
         this.direction = 1;
+        this.scale = 1;
     }
 
+    storeCollider(){
+        if(this.collider)
+            this.oldColliderPosotion = {x:this.collider.position.x,y:this.collider.position.y};
+    }
+    restoreCollider(){
+        if(this.collider){
+            this.collider.position.x = this.oldColliderPosotion.x;
+            this.collider.position.y = this.oldColliderPosotion.y;
+
+        }
+    }
 
     draw(deltaRotation, movements){
+        this.storeCollider();
         push();
         //translate(this.position.x, this.position.y);
 
-        translate(this.position.x-this.type.attachPoint.x, this.position.y-this.type.attachPoint.y);
+        this.translateSprite(this.position.x-this.type.attachPoint.x, this.position.y-this.type.attachPoint.y);
 
         if (movements.forward){
             if (this.direction < 0) {
@@ -46,14 +60,53 @@ class Tail extends BodyPart{
         
         
         rotate(this.rotation);
-        translate(this.type.attachPoint.x, this.type.attachPoint.y);
+        this.translateSprite(this.type.attachPoint.x, this.type.attachPoint.y)
+        this.handleOverlap()
+        
 
-
+        push();
+        scale(this.scale);
         drawSprite(this.sprite);
+        pop();
+
         this.parts.forEach(part=>{
             part.draw();
         })
         pop();
+        this.restoreCollider();
+    }
+
+    onMouseOver(){
+        this.scale = 1.2;
+    }
+    onMouseOut(){
+        this.scale = 1;
+    }
+
+    handleOverlap(){
+        if (this.collider){
+            if (this.collider.overlap(this.sprite)){
+                this.onColliderOverlap(this);
+                this.onMouseOver();
+                
+            } else {
+                this.onMouseOut();
+            }
+        }
+    }
+
+    translateSprite(x,y){
+        translate(x,y);
+        if(this.collider){
+            this.collider.position.x  = this.collider.position.x -x
+            this.collider.position.y  = this.collider.position.y -y
+        }
+    }
+
+
+    updateCollider(collider, onColliderOverlap){
+        this.collider = collider;
+        this.onColliderOverlap = onColliderOverlap;
     }
 
 }

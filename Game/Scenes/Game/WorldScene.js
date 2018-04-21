@@ -17,4 +17,10 @@ class WorldScene extends Scene{
 
         this.character.draw();
     }
+
+    keyPressed(){
+        if (keyCode == 69){
+            engine.scenesManager.pushNewScene(new EditorScene(this.character));
+        }
+    }
 }

@@ -12,6 +12,7 @@ class Eye extends BodyPart{
 
         this.position = {x,y};
         this.rotation = 0;
+        this.scale = 1;
 
         this.parts = parts;
     }
@@ -21,18 +22,56 @@ class Eye extends BodyPart{
         push();
         //translate(this.position.x, this.position.y);
 
-        translate(this.position.x-this.type.attachPoint.x, this.position.y-this.type.attachPoint.y);
-
+        
+        this.translateSprite(this.position.x-this.type.attachPoint.x, this.position.y-this.type.attachPoint.y);
         
         rotate(this.rotation);
-        translate(this.type.attachPoint.x, this.type.attachPoint.y);
+        this.translateSprite(this.type.attachPoint.x, this.type.attachPoint.y);
+        this.handleOverlap()
 
 
+        push();
+        scale(this.scale);
         drawSprite(this.sprite);
+        pop();
+
         this.parts.forEach(part=>{
             part.draw();
         })
         pop();
+    }
+
+    onMouseOver(){
+        this.scale = 1.2;
+    }
+    onMouseOut(){
+        this.scale = 1;
+    }
+
+
+    updateCollider(collider, onColliderOverlap){
+        this.collider = collider;
+        this.onColliderOverlap = onColliderOverlap;
+    }
+
+    handleOverlap(){
+        if (this.collider){
+            if (this.collider.overlap(this.sprite)){
+                this.onColliderOverlap(this);
+                this.onMouseOver();
+                
+            } else {
+                this.onMouseOut();
+            }
+        }
+    }
+
+    translateSprite(x,y){
+        translate(x,y);
+        if(this.collider){
+            this.collider.position.x  = this.collider.position.x -x
+            this.collider.position.y  = this.collider.position.y -y
+        }
     }
 
 }

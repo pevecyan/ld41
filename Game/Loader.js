@@ -43,6 +43,7 @@ class Eye extends BodyPart{
 
         this.position = {x,y};
         this.rotation = 0;
+        this.scale = 1;
 
         this.parts = parts;
     }
@@ -52,18 +53,56 @@ class Eye extends BodyPart{
         push();
         //translate(this.position.x, this.position.y);
 
-        translate(this.position.x-this.type.attachPoint.x, this.position.y-this.type.attachPoint.y);
-
+        
+        this.translateSprite(this.position.x-this.type.attachPoint.x, this.position.y-this.type.attachPoint.y);
         
         rotate(this.rotation);
-        translate(this.type.attachPoint.x, this.type.attachPoint.y);
+        this.translateSprite(this.type.attachPoint.x, this.type.attachPoint.y);
+        this.handleOverlap()
 
 
+        push();
+        scale(this.scale);
         drawSprite(this.sprite);
+        pop();
+
         this.parts.forEach(part=>{
             part.draw();
         })
         pop();
+    }
+
+    onMouseOver(){
+        this.scale = 1.2;
+    }
+    onMouseOut(){
+        this.scale = 1;
+    }
+
+
+    updateCollider(collider, onColliderOverlap){
+        this.collider = collider;
+        this.onColliderOverlap = onColliderOverlap;
+    }
+
+    handleOverlap(){
+        if (this.collider){
+            if (this.collider.overlap(this.sprite)){
+                this.onColliderOverlap(this);
+                this.onMouseOver();
+                
+            } else {
+                this.onMouseOut();
+            }
+        }
+    }
+
+    translateSprite(x,y){
+        translate(x,y);
+        if(this.collider){
+            this.collider.position.x  = this.collider.position.x -x
+            this.collider.position.y  = this.collider.position.y -y
+        }
     }
 
 }
@@ -77,15 +116,58 @@ class Head extends BodyPart{
 
         this.sprite = createSprite(x,y);
         this.sprite.addImage(loadImage(this.types[type]));
-
+        this.sprite.debug = true;
         this.parts = parts;
+
+        this.scale = 1;
+        this.overlaping = false;
+        this.collider = undefined;
+        this.onColliderOverlap = undefined;
     }
 
 
     draw(deltaRotation, movements){
+        push();
+        push();
+        scale(this.scale);
         drawSprite(this.sprite);
+        this.handleOverlap();
+        pop();
+        
         this.parts.forEach(part=>{
             part.draw(deltaRotation, movements);
+        })
+        
+        pop();
+
+        
+    }
+
+    onMouseOver(){
+        this.scale = 1.2;
+    }
+    onMouseOut(){
+        this.scale = 1;
+    }
+
+    handleOverlap(){
+        if (this.collider){
+            if (this.collider.overlap(this.sprite)){
+                this.onColliderOverlap(this);
+                this.onMouseOver();
+                
+            } else {
+                this.onMouseOut();
+            }
+        }
+    }
+
+    updateCollider(collider, onColliderOverlap){
+        this.collider = collider;
+        this.onColliderOverlap = onColliderOverlap;
+        this.parts.forEach(p=>{
+            
+            p.updateCollider(collider, onColliderOverlap);
         })
     }
 
@@ -103,6 +185,7 @@ class Tail extends BodyPart{
 
         this.sprite = createSprite(0,0);
         this.sprite.addImage(loadImage(this.type.asset));
+        this.sprite.debug = true;
 
         this.position = {x,y};
         this.rotation = 0;
@@ -110,14 +193,27 @@ class Tail extends BodyPart{
         this.parts = parts;
 
         this.direction = 1;
+        this.scale = 1;
     }
 
+    storeCollider(){
+        if(this.collider)
+            this.oldColliderPosotion = {x:this.collider.position.x,y:this.collider.position.y};
+    }
+    restoreCollider(){
+        if(this.collider){
+            this.collider.position.x = this.oldColliderPosotion.x;
+            this.collider.position.y = this.oldColliderPosotion.y;
+
+        }
+    }
 
     draw(deltaRotation, movements){
+        this.storeCollider();
         push();
         //translate(this.position.x, this.position.y);
 
-        translate(this.position.x-this.type.attachPoint.x, this.position.y-this.type.attachPoint.y);
+        this.translateSprite(this.position.x-this.type.attachPoint.x, this.position.y-this.type.attachPoint.y);
 
         if (movements.forward){
             if (this.direction < 0) {
@@ -138,14 +234,53 @@ class Tail extends BodyPart{
         
         
         rotate(this.rotation);
-        translate(this.type.attachPoint.x, this.type.attachPoint.y);
+        this.translateSprite(this.type.attachPoint.x, this.type.attachPoint.y)
+        this.handleOverlap()
+        
 
-
+        push();
+        scale(this.scale);
         drawSprite(this.sprite);
+        pop();
+
         this.parts.forEach(part=>{
             part.draw();
         })
         pop();
+        this.restoreCollider();
+    }
+
+    onMouseOver(){
+        this.scale = 1.2;
+    }
+    onMouseOut(){
+        this.scale = 1;
+    }
+
+    handleOverlap(){
+        if (this.collider){
+            if (this.collider.overlap(this.sprite)){
+                this.onColliderOverlap(this);
+                this.onMouseOver();
+                
+            } else {
+                this.onMouseOut();
+            }
+        }
+    }
+
+    translateSprite(x,y){
+        translate(x,y);
+        if(this.collider){
+            this.collider.position.x  = this.collider.position.x -x
+            this.collider.position.y  = this.collider.position.y -y
+        }
+    }
+
+
+    updateCollider(collider, onColliderOverlap){
+        this.collider = collider;
+        this.onColliderOverlap = onColliderOverlap;
     }
 
 }
@@ -154,8 +289,8 @@ class Engine {
     
     setup(){
         this.scenesManager = new ScenesManager();
-        this.height = 600;
-        this.width = 800;
+        this.height = 800;
+        this.width = 1024;
         createCanvas(this.width, this.height);
         console.log('Engine loaded')
 
@@ -181,7 +316,8 @@ class Character {
 
         this.position = {x:100,y:100}
         this.rotation = 0;
-        
+        this.editMode = false;
+        this.collider = undefined;
     }
 
     draw(){
@@ -192,6 +328,12 @@ class Character {
         let deltaRotation = this.rotation - previousRotation;
 
         push();
+        if (this.collider){
+            this.collider.position.x = this.collider.position.x -this.position.x;
+            this.collider.position.y = this.collider.position.y -this.position.y;
+            
+
+        }
         translate(this.position.x, this.position.y);
         rotate(this.rotation)
         this.body.draw(-deltaRotation, movements);
@@ -200,6 +342,9 @@ class Character {
 
 
     handleControls(movements){
+        
+        if(!this.editMode) return;
+        
         if (keyDown(LEFT_ARROW)){
             this.rotation -= 0.05;
         }
@@ -209,10 +354,79 @@ class Character {
         if (keyDown(UP_ARROW)){
             let xChange = 2*Math.sin(this.rotation);
             let yChange = 2*Math.cos(this.rotation);
-            this.position.x = this.position.x + xChange;
-            this.position.y = this.position.y - yChange;
+                this.position.x = this.position.x + xChange;
+                this.position.y = this.position.y - yChange;
+            
+            
             movements.forward = true;
         }
+    }
+
+    updateCollider(collider, onMouseOver){
+        this.body.updateCollider(collider, onMouseOver);
+    }
+}
+
+class EditorScene extends Scene{
+    constructor(character){
+        super();
+        this.character = character;
+        this.character.position = {y:0, y:0};
+        this.character.editMode = true;
+
+        this.mouseCollider = createSprite(0,0);
+        this.mouseCollider.addImage(loadImage('Assets/eye-proto/eye-body.png'));
+        this.mouseCollider.debug = true;
+        this.mouseCollider.setCollider('circle',0,0,2);
+
+        this.character.updateCollider(this.mouseCollider, (item)=>{
+
+        })
+
+
+        this.mouseCollider2 = createSprite(200,200);
+        this.mouseCollider2.addImage(loadImage('Assets/eye-proto/eye-body.png'));
+        this.mouseCollider2.debug = true;
+
+    
+    }
+
+    loaded(){}
+
+    draw(){
+        this.mouseCollider.position.x=mouseX;
+        this.mouseCollider.position.y= mouseY;
+        
+
+        if(this.mouseCollider.overlap(this.mouseCollider2)){
+            console.log('overlap');
+        }
+
+        
+
+        noStroke();
+        fill('#AC9678');
+        rect(0,0,this.width(), this.height());
+
+
+        
+        
+        push();
+        this.mouseCollider.position.x = this.mouseCollider.position.x - this.width()/2;
+        this.mouseCollider.position.y = this.mouseCollider.position.y - this.height()/2;
+        
+        translate(this.width()/2, this.height()/2 )
+        this.character.draw();
+
+        pop();
+
+        drawSprite(this.mouseCollider);
+        drawSprite(this.mouseCollider2);
+
+        
+
+        
+
     }
 }
 
@@ -233,6 +447,12 @@ class WorldScene extends Scene{
         rect(0,0,this.width(), this.height());
 
         this.character.draw();
+    }
+
+    keyPressed(){
+        if (keyCode == 69){
+            engine.scenesManager.pushNewScene(new EditorScene(this.character));
+        }
     }
 }
 
