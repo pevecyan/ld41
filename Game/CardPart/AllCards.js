@@ -13,6 +13,14 @@ class AllCards{
             'tail1': {health:4, damage:1, usedBy:'Character:Enemy', type:'Tail', asset:'Assets/CardParts/Tails/tail1.png',  attachPoint:{x:0,y:0}},
             'tail2': {health:5, damage:2, usedBy:'Character', type:'Tail', asset:'Assets/tail-proto.png',  attachPoint:{x:0,y:30}, id:'tail2'},
             'eye1': {health:5, damage:2, usedBy:'Character', type:'Eye', asset:'Assets/eye-proto/eye-body.png',  attachPoint:{x:0,y:0}, id:'eye1'},
+            'body1': {health:5, damage:2, usedBy:'Character', type:'Body', asset:'Assets/body-proto.png',  attachPoint:{x:0,y:60}, id:'body1', attachments:[
+                {position:{x:0,y:60}, rotation:0},
+                {position:{x:-20,y:-40}, rotation:Math.PI/2},
+                {position:{x:20,y:-40}, rotation:-Math.PI/2},
+                {position:{x:20,y:50}, rotation:-Math.PI/2},
+                {position:{x:-20,y:50}, rotation:Math.PI/2}
+            ]},
+            
         }
     }
 }

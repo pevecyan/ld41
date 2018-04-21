@@ -17,6 +17,9 @@ class EditorScene extends Scene{
         this.itemOnMouse = undefined;
 
         this.updateAvailableItems();
+
+
+        this.itemForRemoval = undefined;
     }
 
     updateAvailableItems(){
@@ -31,7 +34,13 @@ class EditorScene extends Scene{
     }
 
     onItemClicked(item){
-        if (item == this.character.body)return;
+        this.itemForRemoval = item;
+       
+    }
+
+    handleItemRemoval(){
+        let item = this.itemForRemoval
+        if (!item || item == this.character.body)return;
         let index = item.parent.parts.indexOf(item)
         if(index > -1){
             item.parent.parts.splice(index, 1);
@@ -42,6 +51,7 @@ class EditorScene extends Scene{
             
         
         this.updateAvailableItems();
+        this.itemForRemoval = undefined;
     }
 
 
@@ -80,19 +90,20 @@ class EditorScene extends Scene{
 
         if (this.itemOnMouse){
             let nearestAttachPoint = this.character.body.getNearestUnusedPoint(mouseX - this.width()/2.0 ,mouseY - this.height()/2.0); 
-            console.log(nearestAttachPoint.distance);
+            //console.log(nearestAttachPoint.distance);
 
             if(nearestAttachPoint && nearestAttachPoint.distance < 25){
                 if (!mouseIsPressed){
-                    this.character.body.addPart(this.itemOnMouse.card, nearestAttachPoint);
+                    if (nearestAttachPoint.attachPoint.owner == this.itemForRemoval)this.itemForRemoval = undefined;
+                    nearestAttachPoint.attachPoint.owner.addPart(this.itemOnMouse.card, nearestAttachPoint);
                     this.character.useExistingCard(this.itemOnMouse.card);
                     this.itemOnMouse = undefined;
                     this.updateAvailableItems()
                     this.character.body.hideAttachPoint();
                 }
                 else {
-                    this.itemOnMouse.sprite.position.x = nearestAttachPoint.attachPoint.position.x + this.width()/2.0 + this.itemOnMouse.card.card.attachPoint.x;
-                    this.itemOnMouse.sprite.position.y = nearestAttachPoint.attachPoint.position.y +this.height()/2.0 + this.itemOnMouse.card.card.attachPoint.y;
+                    this.itemOnMouse.sprite.position.x =  + this.width()/2.0 + nearestAttachPoint.offset.x +this.itemOnMouse.card.card.attachPoint.x;
+                    this.itemOnMouse.sprite.position.y = +this.height()/2.0 + nearestAttachPoint.offset.y + this.itemOnMouse.card.card.attachPoint.y;
                     
                 }
                 
@@ -108,6 +119,7 @@ class EditorScene extends Scene{
             }
                 
         }
+        this.handleItemRemoval()
 
         push();
         this.storeCollider();

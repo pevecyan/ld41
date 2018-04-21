@@ -1,24 +1,32 @@
-class Tail extends BodyPart{
-    constructor(parentAttachPoint, type, parts = []){
+class Body extends AttachmantPart{
+    constructor(parentAttachPoint, type, parts = [], attachPoints = []){
         super(parentAttachPoint.position.x,parentAttachPoint.position.y, type);
         
-
-
-
         this.type = AllCards.Cards[type];
 
         this.sprite = createSprite(0,0);
         this.sprite.addImage(loadImage(this.type.asset));
         this.sprite.debug = true;
 
+        this.position = parentAttachPoint.position;
         this.rotation = 0;
 
         this.parentAttachPoint = parentAttachPoint;
 
+        this.attachPoints = attachPoints;
+        this.usedAttachPoints = [];
+
         this.parts = parts;
 
-        this.direction = Math.random()>5?1:-1;
+        this.parts.forEach(p=>{
+            p.setParent(this);
+        })
+
+
+        this.direction = 1;
         this.scale = 1;
+
+        this.visibleAttachPoints = false;
     }
 
 
@@ -27,17 +35,17 @@ class Tail extends BodyPart{
         push();
         //translate(this.position.x, this.position.y);
 
-        this.translateSprite(this.parentAttachPoint.position.x, this.parentAttachPoint.position.y)
+        this.translateSprite(this.position.x, this.position.y)
 
         if (movements.forward){
             if (this.direction < 0) {
-                this.rotation += 0.05*(1.5+Math.random()*2)+Math.abs(deltaRotation);
+                this.rotation += 0.01*(1.5+Math.random()*2);
             } else if(this.direction > 0) {
-                this.rotation -= 0.05*(1.5+Math.random()*2)+Math.abs(deltaRotation);
+                this.rotation -= 0.01*(1.5+Math.random()*2);
             }
-            if (this.rotation < -0.7) {
+            if (this.rotation < -0.3) {
                 this.direction = -1;
-            } else if(this.rotation > 0.7) {
+            } else if(this.rotation > 0.3) {
                 this.direction = 1;
             }
         } else {
@@ -57,12 +65,24 @@ class Tail extends BodyPart{
         drawSprite(this.sprite);
         pop();
 
+        if (this.visibleAttachPoints){
+            this.getUnusedAttachPoints().forEach(p=>{
+                push();
+                fill(255);
+                translate(p.position.x, p.position.y)
+                ellipse(0,0,10);
+                pop();
+            })
+        }
+
         this.parts.forEach(part=>{
-            part.draw();
+            part.draw(deltaRotation, movements);
         })
         pop();
         this.restoreCollider();
     }
+
+
 
 
 }
