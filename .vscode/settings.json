@@ -6,5 +6,5 @@
             "**/*.js"
         ]
     },
-    "triggerTaskOnSave.restart": true
+    "triggerTaskOnSave.restart": false
 }

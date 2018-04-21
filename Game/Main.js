@@ -8,3 +8,5 @@ function setup(){
 function draw(){
     engine.draw();
 }
+
+function keyPressed(){engine.keyPressed()}

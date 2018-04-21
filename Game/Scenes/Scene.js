@@ -4,9 +4,11 @@ class Scene {
         
     }
     
-    draw(){
+    draw(){}
+    loaded(){}
+    unloaded(){}
+    keyPressed(){}
 
-    }
 
     height(){
         return engine.height;

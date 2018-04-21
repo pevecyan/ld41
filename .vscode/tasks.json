@@ -6,6 +6,7 @@
         {
             "label": "build",
             "type": "shell",
+            "isBackground": true,
             "command": "node build.js",
             "problemMatcher": []
         }
