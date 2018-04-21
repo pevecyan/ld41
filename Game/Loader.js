@@ -20,8 +20,8 @@ class Engine {
     
     setup(){
         this.scenesManages = new ScenesManager();
-        this.height = 480;
-        this.width = 640;
+        this.height = 600;
+        this.width = 800;
         createCanvas(this.width, this.height);
         console.log('Engine loaded')
 
