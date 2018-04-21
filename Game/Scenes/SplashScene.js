@@ -5,7 +5,7 @@ class SplashScene extends Scene {
         console.log('splash loaded');
         setTimeout(() => {
             engine.scenesManager.pushScene('menu');
-        }, 2000);
+        }, 500);
     }
     
     draw(){

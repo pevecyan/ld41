@@ -1,4 +1,16 @@
 //0
+class BodyPart{
+    constructor(x,y, type){
+    }
+
+    attach(parent, type, x, y){
+        
+    }
+    dettach(parent){
+        parent.remove(this.sprite);
+    };
+}
+//0
 class Scene {
     constructor(){
         
@@ -16,6 +28,70 @@ class Scene {
     width(){
         return engine.width;
     }
+}
+class Head extends BodyPart{
+    constructor(x,y, type, parts = []){
+        super(x,y, type);
+        this.types = {
+            headProto:'Assets/head-proto.png'  
+        };
+
+
+        this.sprite = createSprite(x,y);
+        this.sprite.addImage(loadImage(this.types[type]));
+
+        this.parts = parts;
+    }
+
+
+    draw(deltaRotation){
+        drawSprite(this.sprite);
+        this.parts.forEach(part=>{
+            part.draw(deltaRotation);
+        })
+    }
+
+}
+class Tail extends BodyPart{
+    constructor(x,y, type, parts = []){
+        super(x,y, type);
+        this.types = {
+            tailProto:{asset:'Assets/tail-proto.png', attachPoint:{x:0,y:30}}  
+        };
+
+
+
+        this.type = this.types[type];
+
+        this.sprite = createSprite(0,0);
+        this.sprite.addImage(loadImage(this.type.asset));
+
+        this.position = {x,y};
+        this.rotation = 0;
+
+        this.parts = parts;
+    }
+
+
+    draw(deltaRotation){
+        push();
+        //translate(this.position.x, this.position.y);
+
+        translate(this.position.x-this.type.attachPoint.x, this.position.y-this.type.attachPoint.y);
+
+        this.rotation += deltaRotation*(1.5+Math.random()*2);
+        this.rotation = Math.min(1, Math.max(-1, this.rotation));
+        rotate(this.rotation);
+        translate(this.type.attachPoint.x, this.type.attachPoint.y);
+
+
+        drawSprite(this.sprite);
+        this.parts.forEach(part=>{
+            part.draw();
+        })
+        pop();
+    }
+
 }
 
 class Engine {
@@ -37,26 +113,67 @@ class Engine {
     }
 }
 
-let engine;
 
-function setup(){
-    engine  = new Engine();
-    engine.setup();
+class Character {
+    constructor(){
+        this.bodyParts = new Group();
+
+        this.body = new Head(0,0,'headProto',[
+            new Tail(0,50,'tailProto')
+        ]);
+
+        this.position = {x:100,y:100}
+        this.rotation = 0;
+        
+    }
+
+    draw(){
+        let previousRotation = this.rotation;
+        this.handleControls();
+
+        let deltaRotation = this.rotation - previousRotation;
+
+        push();
+        translate(this.position.x, this.position.y);
+        rotate(this.rotation)
+        this.body.draw(-deltaRotation);
+        pop();
+    }
+
+
+    handleControls(){
+        if (keyDown(LEFT_ARROW)){
+            this.rotation -= 0.05;
+        }
+        if (keyDown(RIGHT_ARROW)){
+            this.rotation += 0.05;
+        }
+        if (keyDown(UP_ARROW)){
+            let xChange = 2*Math.sin(this.rotation);
+            let yChange = 2*Math.cos(this.rotation);
+            this.position.x = this.position.x + xChange;
+            this.position.y = this.position.y - yChange;
+        }
+    }
 }
-
-function draw(){
-    engine.draw();
-}
-
-function keyPressed(){engine.keyPressed()}
-
 
 class WorldScene extends Scene{
+
+    constructor(){
+        super();
+        this.character = new Character();
+    }
+
+    loaded(){
+        
+    }
 
     draw(){
         noStroke();
         fill('#6aa177');
         rect(0,0,this.width(), this.height());
+
+        this.character.draw();
     }
 }
 
@@ -80,6 +197,27 @@ class MenuScene extends Scene {
     }
     
 }
+
+class SplashScene extends Scene {
+
+    loaded(){
+        console.log('splash loaded');
+        setTimeout(() => {
+            engine.scenesManager.pushScene('menu');
+        }, 500);
+    }
+    
+    draw(){
+        noStroke()
+        
+        fill('rgb(1, 119, 186)');
+        rect(0, 0, this.width(), this.height());
+        textAlign(CENTER,CENTER);
+        fill(255);
+        textSize(30);
+        text('GAME NAME', 0, 0, this.width(), this.height())
+    }
+}   
 class ScenesManager {
     constructor(){
         this.scenesStack = [];
@@ -122,24 +260,15 @@ class ScenesManager {
 }
 
 
+let engine;
 
-class SplashScene extends Scene {
+function setup(){
+    engine  = new Engine();
+    engine.setup();
+}
 
-    loaded(){
-        console.log('splash loaded');
-        setTimeout(() => {
-            engine.scenesManager.pushScene('menu');
-        }, 2000);
-    }
-    
-    draw(){
-        noStroke()
-        
-        fill('rgb(1, 119, 186)');
-        rect(0, 0, this.width(), this.height());
-        textAlign(CENTER,CENTER);
-        fill(255);
-        textSize(30);
-        text('GAME NAME', 0, 0, this.width(), this.height())
-    }
-}   
+function draw(){
+    engine.draw();
+}
+
+function keyPressed(){engine.keyPressed()}
