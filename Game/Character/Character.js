@@ -38,8 +38,9 @@ class Character {
     }
 
     addCard(item, type){
-        this.allCards.push(AllCards.Cards[type]);
-        this.usedCards.push(AllCards.Cards[type]);
+        let id = type+new Date().getTime();
+        this.allCards.push({id, card:AllCards.Cards[type]});
+        this.usedCards.push({id, card:AllCards.Cards[type]});
         return item
     }
 
