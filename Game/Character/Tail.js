@@ -43,7 +43,6 @@ class Tail extends BodyPart{
             
         }
         this.rotation = Math.min(1, Math.max(-1, this.rotation));
-        console.log(this.rotation);
         
         
         rotate(this.rotation);
