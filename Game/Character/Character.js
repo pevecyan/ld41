@@ -1,15 +1,16 @@
 
 class Character {
     constructor(){
-        this.bodyParts = new Group();
+        this.allCards = [];
+        this.usedCards = [];
 
-        this.body = new Head(0,0,'head2',[
-            new Tail(0,50,'tail2'),
+
+        this.body = this.addCard(new Head(0,0,'head2',[
+            this.addCard(new Tail(0,50,'tail2'),'tail2'),
             //new Eye(0,-20, 'eyeProto')
-        ]);
+        ]),'head2');
 
         
-
         this.position = {x:100,y:100}
         this.rotation = 0;
         this.editMode = false;
@@ -36,7 +37,11 @@ class Character {
         pop();
     }
 
-    
+    addCard(item, type){
+        this.allCards.push(AllCards.Cards[type]);
+        this.usedCards.push(AllCards.Cards[type]);
+        return item
+    }
 
     handleControls(movements){
         
