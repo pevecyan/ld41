@@ -1,0 +1,10 @@
+{
+    "workbench.colorTheme": "Panda Syntax",
+    "triggerTaskOnSave.on": true,
+    "triggerTaskOnSave.tasks": {
+        "build":[
+            "**/*.js"
+        ]
+    },
+    "triggerTaskOnSave.restart": true
+}
