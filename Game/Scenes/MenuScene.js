@@ -13,9 +13,11 @@ class MenuScene extends Scene {
     }
 
     keyPressed(){
-        if (keyCode == 32){
+        if (keyCode == 32){ //Space
             engine.scenesManager.pushNewScene(new WorldScene());
         }
+        if(keyCode == 66){ //B
+            engine.scenesManager.pushNewScene(new BattleScene());
+        }
     }
-    
 }
