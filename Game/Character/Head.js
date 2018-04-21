@@ -10,6 +10,9 @@ class Head extends BodyPart{
         this.sprite.addImage(loadImage(this.types[type]));
         this.sprite.debug = true;
         this.parts = parts;
+        this.parts.forEach(p=>{
+            p.setParent(this);
+        })
 
         this.scale = 1;
         this.overlaping = false;
@@ -45,21 +48,24 @@ class Head extends BodyPart{
     handleOverlap(){
         if (this.collider && this.parts.length == 0){
             if (this.collider.overlap(this.sprite)){
-                this.onColliderOverlap(this);
+                if (mouseIsPressed){this.mousePressedOn = true; }
+                if (!mouseIsPressed && this.mousePressedOn)  this.onItemClick(this);
                 this.onMouseOver();
                 
             } else {
                 this.onMouseOut();
+                this.mousePressedOn = false;
             }
         }
     }
 
-    updateCollider(collider, onColliderOverlap){
+    updateCollider(collider, onItemClick){
         this.collider = collider;
-        this.onColliderOverlap = onColliderOverlap;
+        this.onItemClick = onItemClick;
         this.parts.forEach(p=>{
-            p.updateCollider(collider, onColliderOverlap);
+            p.updateCollider(collider, onItemClick);
         })
     }
 
+    setParent(parent){this.parent = parent}
 }

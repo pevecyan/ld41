@@ -49,19 +49,21 @@ class Eye extends BodyPart{
     }
 
 
-    updateCollider(collider, onColliderOverlap){
+    updateCollider(collider, onItemClick){
         this.collider = collider;
-        this.onColliderOverlap = onColliderOverlap;
+        this.onItemClick = onItemClick;
     }
 
     handleOverlap(){
         if (this.collider){
             if (this.collider.overlap(this.sprite)){
-                this.onColliderOverlap(this);
+                if (mouseIsPressed){this.mousePressedOn = true; }
+                if (!mouseIsPressed && this.mousePressedOn)  this.onItemClick(this);
                 this.onMouseOver();
                 
             } else {
                 this.onMouseOut();
+                this.mousePressedOn = false;
             }
         }
     }
@@ -74,4 +76,6 @@ class Eye extends BodyPart{
         }
     }
 
+
+    setParent(parent){this.parent = parent}
 }

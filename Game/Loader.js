@@ -80,19 +80,21 @@ class Eye extends BodyPart{
     }
 
 
-    updateCollider(collider, onColliderOverlap){
+    updateCollider(collider, onItemClick){
         this.collider = collider;
-        this.onColliderOverlap = onColliderOverlap;
+        this.onItemClick = onItemClick;
     }
 
     handleOverlap(){
         if (this.collider){
             if (this.collider.overlap(this.sprite)){
-                this.onColliderOverlap(this);
+                if (mouseIsPressed){this.mousePressedOn = true; }
+                if (!mouseIsPressed && this.mousePressedOn)  this.onItemClick(this);
                 this.onMouseOver();
                 
             } else {
                 this.onMouseOut();
+                this.mousePressedOn = false;
             }
         }
     }
@@ -105,6 +107,8 @@ class Eye extends BodyPart{
         }
     }
 
+
+    setParent(parent){this.parent = parent}
 }
 class Head extends BodyPart{
     constructor(x,y, type, parts = []){
@@ -118,6 +122,9 @@ class Head extends BodyPart{
         this.sprite.addImage(loadImage(this.types[type]));
         this.sprite.debug = true;
         this.parts = parts;
+        this.parts.forEach(p=>{
+            p.setParent(this);
+        })
 
         this.scale = 1;
         this.overlaping = false;
@@ -153,23 +160,26 @@ class Head extends BodyPart{
     handleOverlap(){
         if (this.collider && this.parts.length == 0){
             if (this.collider.overlap(this.sprite)){
-                this.onColliderOverlap(this);
+                if (mouseIsPressed){this.mousePressedOn = true; }
+                if (!mouseIsPressed && this.mousePressedOn)  this.onItemClick(this);
                 this.onMouseOver();
                 
             } else {
                 this.onMouseOut();
+                this.mousePressedOn = false;
             }
         }
     }
 
-    updateCollider(collider, onColliderOverlap){
+    updateCollider(collider, onItemClick){
         this.collider = collider;
-        this.onColliderOverlap = onColliderOverlap;
+        this.onItemClick = onItemClick;
         this.parts.forEach(p=>{
-            p.updateCollider(collider, onColliderOverlap);
+            p.updateCollider(collider, onItemClick);
         })
     }
 
+    setParent(parent){this.parent = parent}
 }
 class Tail extends BodyPart{
     constructor(x,y, type, parts = []){
@@ -259,12 +269,14 @@ class Tail extends BodyPart{
     handleOverlap(){
         if (this.collider){
             if (this.collider.overlap(this.sprite)){
-                this.onColliderOverlap(this);
+                if (mouseIsPressed){this.mousePressedOn = true; }
+                if (!mouseIsPressed && this.mousePressedOn)  this.onItemClick(this);
+
                 this.onMouseOver();
-                
             } else {
                 this.onMouseOut();
-            }
+                this.mousePressedOn = false;
+            } 
         }
     }
 
@@ -276,10 +288,11 @@ class Tail extends BodyPart{
         }
     }
 
+    setParent(parent){this.parent = parent}
 
-    updateCollider(collider, onColliderOverlap){
+    updateCollider(collider, onItemClick){
         this.collider = collider;
-        this.onColliderOverlap = onColliderOverlap;
+        this.onItemClick = onItemClick;
     }
 
 }
@@ -342,7 +355,7 @@ class Character {
 
     handleControls(movements){
         
-        if(!this.editMode) return;
+        if(this.editMode) return;
         
         if (keyDown(LEFT_ARROW)){
             this.rotation -= 0.05;
@@ -378,16 +391,15 @@ class EditorScene extends Scene{
         this.mouseCollider.debug = true;
         this.mouseCollider.setCollider('circle',0,0,2);
 
-        this.character.updateCollider(this.mouseCollider, (item)=>{
-
-        })
-
-
-        this.mouseCollider2 = createSprite(200,200);
-        this.mouseCollider2.addImage(loadImage('Assets/eye-proto/eye-body.png'));
-        this.mouseCollider2.debug = true;
+        this.character.updateCollider(this.mouseCollider, this.onItemClicked)
 
     
+    }
+
+    onItemClicked(item){
+        let index = item.parent.parts.indexOf(item)
+        if(index != undefined)
+            item.parent.parts.splice(index, 1);
     }
 
     loaded(){}
@@ -395,13 +407,7 @@ class EditorScene extends Scene{
     draw(){
         this.mouseCollider.position.x=mouseX;
         this.mouseCollider.position.y= mouseY;
-        
-
-        if(this.mouseCollider.overlap(this.mouseCollider2)){
-            console.log('overlap');
-        }
-
-        
+         
 
         noStroke();
         fill('#AC9678');
@@ -420,7 +426,6 @@ class EditorScene extends Scene{
         pop();
 
         drawSprite(this.mouseCollider);
-        drawSprite(this.mouseCollider2);
 
         
 

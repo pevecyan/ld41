@@ -11,16 +11,15 @@ class EditorScene extends Scene{
         this.mouseCollider.debug = true;
         this.mouseCollider.setCollider('circle',0,0,2);
 
-        this.character.updateCollider(this.mouseCollider, (item)=>{
-
-        })
-
-
-        this.mouseCollider2 = createSprite(200,200);
-        this.mouseCollider2.addImage(loadImage('Assets/eye-proto/eye-body.png'));
-        this.mouseCollider2.debug = true;
+        this.character.updateCollider(this.mouseCollider, this.onItemClicked)
 
     
+    }
+
+    onItemClicked(item){
+        let index = item.parent.parts.indexOf(item)
+        if(index != undefined)
+            item.parent.parts.splice(index, 1);
     }
 
     loaded(){}
@@ -28,13 +27,7 @@ class EditorScene extends Scene{
     draw(){
         this.mouseCollider.position.x=mouseX;
         this.mouseCollider.position.y= mouseY;
-        
-
-        if(this.mouseCollider.overlap(this.mouseCollider2)){
-            console.log('overlap');
-        }
-
-        
+         
 
         noStroke();
         fill('#AC9678');
@@ -53,7 +46,6 @@ class EditorScene extends Scene{
         pop();
 
         drawSprite(this.mouseCollider);
-        drawSprite(this.mouseCollider2);
 
         
 
