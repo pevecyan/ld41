@@ -11,15 +11,23 @@ class EditorScene extends Scene{
         this.mouseCollider.debug = true;
         this.mouseCollider.setCollider('circle',0,0,2);
 
-        this.character.updateCollider(this.mouseCollider, this.onItemClicked)
+        this.character.updateCollider(this.mouseCollider, this.onItemClicked.bind(this))
 
-    
+        this.availableItems = [];
+        this.updateAvailableItems();
+    }
+
+    updateAvailableItems(){
+        let unusedCards = this.character.allCards.filter(a=>!this.character.usedCards.find(b=>a.id == b.id));
+        console.log(unusedCards);
     }
 
     onItemClicked(item){
         let index = item.parent.parts.indexOf(item)
         if(index != undefined)
             item.parent.parts.splice(index, 1);
+        
+        this.updateAvailableItems();
     }
 
     loaded(){}
