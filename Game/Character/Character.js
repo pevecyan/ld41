@@ -3,9 +3,9 @@ class Character {
     constructor(){
         this.bodyParts = new Group();
 
-        this.body = new Head(0,0,'headProto',[
-            new Tail(0,50,'tailProto'),
-            new Eye(0,-20, 'eyeProto')
+        this.body = new Head(0,0,'head2',[
+            new Tail(0,50,'tail2'),
+            //new Eye(0,-20, 'eyeProto')
         ]);
 
         

@@ -1,13 +1,11 @@
 class Tail extends BodyPart{
     constructor(x,y, type, parts = []){
         super(x,y, type);
-        this.types = {
-            tailProto:{asset:'Assets/tail-proto.png', attachPoint:{x:0,y:30}}  
-        };
+        
 
 
 
-        this.type = this.types[type];
+        this.type = AllCards.Cards[type];
 
         this.sprite = createSprite(0,0);
         this.sprite.addImage(loadImage(this.type.asset));

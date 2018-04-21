@@ -1,13 +1,12 @@
 class Head extends BodyPart{
     constructor(x,y, type, parts = []){
         super(x,y, type);
-        this.types = {
-            headProto:'Assets/head-proto.png'  
-        };
+
+        this.type = AllCards.Cards[type]; 
 
 
         this.sprite = createSprite(x,y);
-        this.sprite.addImage(loadImage(this.types[type]));
+        this.sprite.addImage(loadImage(this.type.asset));
         this.sprite.debug = true;
         this.parts = parts;
         this.parts.forEach(p=>{
