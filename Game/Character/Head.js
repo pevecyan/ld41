@@ -13,10 +13,10 @@ class Head extends BodyPart{
     }
 
 
-    draw(deltaRotation){
+    draw(deltaRotation, movements){
         drawSprite(this.sprite);
         this.parts.forEach(part=>{
-            part.draw(deltaRotation);
+            part.draw(deltaRotation, movements);
         })
     }
 

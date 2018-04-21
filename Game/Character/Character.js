@@ -14,19 +14,20 @@ class Character {
 
     draw(){
         let previousRotation = this.rotation;
-        this.handleControls();
+        let movements = {forward: false, left:false, right:false}
+        this.handleControls(movements);
 
         let deltaRotation = this.rotation - previousRotation;
 
         push();
         translate(this.position.x, this.position.y);
         rotate(this.rotation)
-        this.body.draw(-deltaRotation);
+        this.body.draw(-deltaRotation, movements);
         pop();
     }
 
 
-    handleControls(){
+    handleControls(movements){
         if (keyDown(LEFT_ARROW)){
             this.rotation -= 0.05;
         }
@@ -38,6 +39,7 @@ class Character {
             let yChange = 2*Math.cos(this.rotation);
             this.position.x = this.position.x + xChange;
             this.position.y = this.position.y - yChange;
+            movements.forward = true;
         }
     }
 }
