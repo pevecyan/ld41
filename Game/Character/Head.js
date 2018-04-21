@@ -74,7 +74,11 @@ class Head extends BodyPart{
                 this.onMouseOut();
                 this.mousePressedOn = false;
             }
+        } else {
+            this.onMouseOut();
+                this.mousePressedOn = false;
         }
+
     }
 
     updateCollider(collider, onItemClick){
@@ -94,6 +98,9 @@ class Head extends BodyPart{
     showAttachPoints(){
         this.visibleAttachPoints = true;
     }
+    hideAttachPoint(){
+        this.visibleAttachPoints = false;
+    }
     getUnusedAttachPoints(){
         return this.attachPoints.filter(a=>this.usedAttachPoints.indexOf(a)==-1);
     }
@@ -110,9 +117,9 @@ class Head extends BodyPart{
         unusedAttachPoint = unusedAttachPoint.map(a=>{
             return {
                 attachPoint: a,
-                distance: Math.sqrt(Math.pow((x+a.position.x),2),Math.pow(y+a.position.y,2))
+                distance: Math.sqrt(Math.pow((x-a.position.x),2)+Math.pow(y-a.position.y,2))
             }
-        }).sort((a,b)=>a-b);
+        }).sort((a,b)=>a.distance-b.distance);
 
         return unusedAttachPoint[0];
 
@@ -126,6 +133,9 @@ class Head extends BodyPart{
 
         if (item.card.type == 'Tail') {
             this.parts.push(new Tail(point.attachPoint,item.card.id));
+        }
+        else if (item.card.type == 'Eye'){
+            this.parts.push(new Eye(point.attachPoint,item.card.id));
         }
         this.parts.forEach(p=>{
             p.setParent(this);

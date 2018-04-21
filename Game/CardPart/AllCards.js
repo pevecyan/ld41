@@ -12,6 +12,7 @@ class AllCards{
             'leg3': {health:9, damage:3, usedBy:'Character', type:'Leg', asset:'Assets/CardParts/Legs/leg3.png',  attachPoint:{x:0,y:0}},
             'tail1': {health:4, damage:1, usedBy:'Character:Enemy', type:'Tail', asset:'Assets/CardParts/Tails/tail1.png',  attachPoint:{x:0,y:0}},
             'tail2': {health:5, damage:2, usedBy:'Character', type:'Tail', asset:'Assets/tail-proto.png',  attachPoint:{x:0,y:30}, id:'tail2'},
+            'eye1': {health:5, damage:2, usedBy:'Character', type:'Eye', asset:'Assets/eye-proto/eye-body.png',  attachPoint:{x:0,y:0}, id:'eye1'},
         }
     }
 }

@@ -80,17 +80,20 @@ class EditorScene extends Scene{
 
         if (this.itemOnMouse){
             let nearestAttachPoint = this.character.body.getNearestUnusedPoint(mouseX - this.width()/2.0 ,mouseY - this.height()/2.0); 
-            //console.log(nearestAttachPoint.distance);
+            console.log(nearestAttachPoint.distance);
+
             if(nearestAttachPoint && nearestAttachPoint.distance < 25){
                 if (!mouseIsPressed){
                     this.character.body.addPart(this.itemOnMouse.card, nearestAttachPoint);
                     this.character.useExistingCard(this.itemOnMouse.card);
                     this.itemOnMouse = undefined;
                     this.updateAvailableItems()
+                    this.character.body.hideAttachPoint();
                 }
                 else {
                     this.itemOnMouse.sprite.position.x = nearestAttachPoint.attachPoint.position.x + this.width()/2.0 + this.itemOnMouse.card.card.attachPoint.x;
                     this.itemOnMouse.sprite.position.y = nearestAttachPoint.attachPoint.position.y +this.height()/2.0 + this.itemOnMouse.card.card.attachPoint.y;
+                    
                 }
                 
                 
@@ -100,8 +103,10 @@ class EditorScene extends Scene{
                  this.itemOnMouse.sprite.position.y = mouseY+ this.itemOnMouse.card.card.attachPoint.y;
             }
 
-            if (this.itemOnMouse)
+            if (this.itemOnMouse){
                 drawSprite(this.itemOnMouse.sprite);
+            }
+                
         }
 
         push();
@@ -127,6 +132,7 @@ class EditorScene extends Scene{
                     this.itemOnMouse.sprite.position.x = 0;
                     this.itemOnMouse.sprite.position.y = 0;
                     this.itemOnMouse = undefined;
+                    this.character.body.hideAttachPoint();
                 }
             }
 

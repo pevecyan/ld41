@@ -1,16 +1,17 @@
 class Eye extends BodyPart{
-    constructor(x,y, type, parts = []){
-        super(x,y, type);
-        this.types = {
-            eyeProto:  {asset:'Assets/eye-proto/eye-body.png', attachPoint:{x:0,y:0}}
-        };
-
-        this.type = this.types[type];
+    constructor(parentAttachPoint, type, parts = []){
+        super(parentAttachPoint.position.x,parentAttachPoint.position.y, type);
+       
+        this.type = AllCards.Cards[type];
 
         this.sprite = createSprite(0,0);
         this.sprite.addImage(loadImage(this.type.asset));
 
-        this.position = {x,y};
+        this.position = parentAttachPoint.position;
+        this.rotation = 0;
+
+        this.parentAttachPoint = parentAttachPoint;
+
         this.rotation = 0;
         this.scale = 1;
 
@@ -19,11 +20,12 @@ class Eye extends BodyPart{
 
 
     draw(deltaRotation, movements){
+        this.storeCollider();
         push();
         //translate(this.position.x, this.position.y);
 
         
-        this.translateSprite(this.position.x-this.type.attachPoint.x, this.position.y-this.type.attachPoint.y);
+        this.translateSprite(this.position.x, this.position.y)
         
         rotate(this.rotation);
         this.translateSprite(this.type.attachPoint.x, this.type.attachPoint.y);
@@ -39,6 +41,7 @@ class Eye extends BodyPart{
             part.draw();
         })
         pop();
+        this.restoreCollider();
     }
 
     onMouseOver(){
@@ -47,6 +50,19 @@ class Eye extends BodyPart{
     onMouseOut(){
         this.scale = 1;
     }
+
+    storeCollider(){
+        if(this.collider)
+            this.oldColliderPosotion = {x:this.collider.position.x,y:this.collider.position.y};
+    }
+    restoreCollider(){
+        if(this.collider){
+            this.collider.position.x = this.oldColliderPosotion.x;
+            this.collider.position.y = this.oldColliderPosotion.y;
+
+        }
+    }
+
 
 
     updateCollider(collider, onItemClick){
