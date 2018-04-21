@@ -1,20 +1,17 @@
-class Card{
+class EnemyCard{
     constructor(card, counter){
         // 48, 70 Topleft corner
         this.counter = counter;
-        this.isPicked = false;
-        this.isFighting = false;
+        
+        this.battleFieldCenterX = 200;
+        this.battleFieldCenterY = 400;
 
-        //Starting position of players cards
-        this.offSetPlayerCardsY = 620;
-        this.offSetPlayerCardsX = 50;
-        
-        
+        this.offSetEnemyCardsY = 50;
+        this.offSetEnemyCardsX = 50;
+        this.offSetX = 590;
 
         loadImage('Assets/CardParts/CardProto.png', (cardImage) => {
             this.width = cardImage.width;   
-            this.height = cardImage.height;
-            this.sprite = createSprite((((cardImage.width * this.counter) + cardImage.width / 2) + this.offSetPlayerCardsX) + (this.offSetPlayerCardsX * this.counter) , (cardImage.height / 2) + this.offSetPlayerCardsY);                                                                                        
             loadImage(card.asset, (partImage) => {
                 this.partImage = partImage;
                 this.cardImage = cardImage;
@@ -25,22 +22,13 @@ class Card{
                 this.pg.text("Name 1", 17 , 4, 50, 50);
                 this.pg.text(card.health, 24 , 112, 50, 50);
                 this.pg.text(card.damage, 65 , 112, 50, 50);
-                this.pg.depth = 12;
             });
-            this.sprite.width = cardImage.width;
-            this.sprite.height = cardImage.height;
-            this.sprite.depth = 11;
-            this.sprite.visible = false;
         });
     } 
 
     draw(){
-        //drawSprite(this.sprite);
         if(this.pg != undefined && this.counter > -1){
-            drawSprite(this.sprite);
-            this.sprite.debug = mouseIsPressed;
-            this.sprite.visible = mouseIsPressed;
-            image(this.pg, this.sprite.position.x - this.width / 2, this.sprite.position.y - this.height / 2);
+            image(this.pg, ((this.width * this.counter) + this.offSetX) + (this.offSetEnemyCardsX * this.counter), this.offSetEnemyCardsY);
         }
     }
 
