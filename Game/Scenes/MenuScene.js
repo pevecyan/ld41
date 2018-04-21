@@ -16,8 +16,5 @@ class MenuScene extends Scene {
         if (keyCode == 32){ //Space
             engine.scenesManager.pushNewScene(new WorldScene());
         }
-        if(keyCode == 66){ //B
-            engine.scenesManager.pushNewScene(new BattleScene());
-        }
     }
 }

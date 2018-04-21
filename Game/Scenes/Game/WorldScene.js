@@ -1,4 +1,3 @@
-
 class WorldScene extends Scene{
 
     constructor(){
@@ -16,5 +15,14 @@ class WorldScene extends Scene{
         rect(0,0,this.width(), this.height());
 
         this.character.draw();
+    }
+
+    keyPressed(){
+        if(keyCode == 69){
+            engine.scenesManager.pushNewScene(new EditorScene(this.character));
+        }
+        if(keyCode == 66){
+            engine.scenesManager.pushNewScene(new BattleScene(this.character));
+        }
     }
 }

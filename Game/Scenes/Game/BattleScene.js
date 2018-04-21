@@ -1,7 +1,9 @@
 class BattleScene extends Scene{
     
-    constructor(){
+    constructor(character){
         super();
+        this.character = character;
+               
         this.card = new Card(0,0,0,"card");
 
     }
