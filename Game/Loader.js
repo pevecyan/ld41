@@ -29,6 +29,64 @@ class Scene {
         return engine.width;
     }
 }
+let engine;
+
+function setup(){
+    engine  = new Engine();
+    engine.setup();
+}
+
+function draw(){
+    engine.draw();
+}
+
+function keyPressed(){engine.keyPressed()}
+
+
+class Character {
+    constructor(){
+        this.bodyParts = new Group();
+
+        this.body = new Head(0,0,'headProto',[
+            new Tail(0,50,'tailProto')
+        ]);
+
+        this.position = {x:100,y:100}
+        this.rotation = 0;
+        
+    }
+
+    draw(){
+        let previousRotation = this.rotation;
+        let movements = {forward: false, left:false, right:false}
+        this.handleControls(movements);
+
+        let deltaRotation = this.rotation - previousRotation;
+
+        push();
+        translate(this.position.x, this.position.y);
+        rotate(this.rotation)
+        this.body.draw(-deltaRotation, movements);
+        pop();
+    }
+
+
+    handleControls(movements){
+        if (keyDown(LEFT_ARROW)){
+            this.rotation -= 0.05;
+        }
+        if (keyDown(RIGHT_ARROW)){
+            this.rotation += 0.05;
+        }
+        if (keyDown(UP_ARROW)){
+            let xChange = 2*Math.sin(this.rotation);
+            let yChange = 2*Math.cos(this.rotation);
+            this.position.x = this.position.x + xChange;
+            this.position.y = this.position.y - yChange;
+            movements.forward = true;
+        }
+    }
+}
 class Head extends BodyPart{
     constructor(x,y, type, parts = []){
         super(x,y, type);
@@ -117,8 +175,8 @@ class Engine {
     
     setup(){
         this.scenesManager = new ScenesManager();
-        this.height = 600;
-        this.width = 800;
+        this.height = 800;
+        this.width = 1024;
         createCanvas(this.width, this.height);
         console.log('Engine loaded')
 
@@ -132,49 +190,54 @@ class Engine {
     }
 }
 
-
-class Character {
-    constructor(){
-        this.bodyParts = new Group();
-
-        this.body = new Head(0,0,'headProto',[
-            new Tail(0,50,'tailProto')
-        ]);
-
-        this.position = {x:100,y:100}
-        this.rotation = 0;
+class Card{
+    constructor(id, health, attack, info){
+        // 48, 70 Topleft corner
+        this.id = id;
+        this.health = health;
+        this.attack = attack;
+        this.info = info;
         
+        this.sprite = createSprite(48, 70);
+        this.sprite.addImage(loadImage('Assets/CardParts/Heads/head1.png'));
     }
 
     draw(){
-        let previousRotation = this.rotation;
-        let movements = {forward: false, left:false, right:false}
-        this.handleControls(movements);
-
-        let deltaRotation = this.rotation - previousRotation;
-
-        push();
-        translate(this.position.x, this.position.y);
-        rotate(this.rotation)
-        this.body.draw(-deltaRotation, movements);
-        pop();
+        drawSprite(this.sprite);
     }
 
+    getHealth(){
+        return this.health;
+    }
+    getAttack(){
+        return this.attack;
+    }
+    setHealth(newHealth){
+        this.health = newHealth;
+    }
+    setAttack(newAttack){
+        this.attack = newAttack;
+    }
 
-    handleControls(movements){
-        if (keyDown(LEFT_ARROW)){
-            this.rotation -= 0.05;
-        }
-        if (keyDown(RIGHT_ARROW)){
-            this.rotation += 0.05;
-        }
-        if (keyDown(UP_ARROW)){
-            let xChange = 2*Math.sin(this.rotation);
-            let yChange = 2*Math.cos(this.rotation);
-            this.position.x = this.position.x + xChange;
-            this.position.y = this.position.y - yChange;
-            movements.forward = true;
-        }
+}
+class BattleScene extends Scene{
+    
+    constructor(){
+        super();
+        this.card = new Card(0,0,0,"card");
+
+    }
+
+    loaded(){
+
+    }
+
+    draw(){
+        noStroke();
+        fill('#c96168');
+        rect(0,0, this.width(), this.height());
+
+        this.card.draw();
     }
 }
 
@@ -212,42 +275,31 @@ class MenuScene extends Scene {
     }
 
     keyPressed(){
-        if (keyCode == 32){
+        if (keyCode == 32){ //Space
             engine.scenesManager.pushNewScene(new WorldScene());
         }
+        if(keyCode == 66){ //B
+            engine.scenesManager.pushNewScene(new BattleScene());
+        }
     }
-    
 }
-
-class SplashScene extends Scene {
-
-    loaded(){
-        console.log('splash loaded');
-        setTimeout(() => {
-            engine.scenesManager.pushScene('menu');
-        }, 500);
+class AllCards{
+    constructor(){
+        this.cards = {
+            
+        }
     }
-    
-    draw(){
-        noStroke()
-        
-        fill('rgb(1, 119, 186)');
-        rect(0, 0, this.width(), this.height());
-        textAlign(CENTER,CENTER);
-        fill(255);
-        textSize(30);
-        text('GAME NAME', 0, 0, this.width(), this.height())
-    }
-}   
+}
 class ScenesManager {
     constructor(){
         this.scenesStack = [];
 
         this.scenes = {
             'splash': new SplashScene(),
-            'menu': new MenuScene()
+            'menu': new MenuScene(),
+            'battle': new BattleScene()
         }
-        this.pushScene('splash');
+        this.pushScene('battle');
     }
 
     draw(){
@@ -281,15 +333,24 @@ class ScenesManager {
 }
 
 
-let engine;
 
-function setup(){
-    engine  = new Engine();
-    engine.setup();
-}
+class SplashScene extends Scene {
 
-function draw(){
-    engine.draw();
-}
-
-function keyPressed(){engine.keyPressed()}
+    loaded(){
+        console.log('splash loaded');
+        setTimeout(() => {
+            engine.scenesManager.pushScene('menu');
+        }, 500);
+    }
+    
+    draw(){
+        noStroke()
+        
+        fill('rgb(1, 119, 186)');
+        rect(0, 0, this.width(), this.height());
+        textAlign(CENTER,CENTER);
+        fill(255);
+        textSize(30);
+        text('GAME NAME', 0, 0, this.width(), this.height())
+    }
+}   

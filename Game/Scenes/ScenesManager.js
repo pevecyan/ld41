@@ -4,9 +4,10 @@ class ScenesManager {
 
         this.scenes = {
             'splash': new SplashScene(),
-            'menu': new MenuScene()
+            'menu': new MenuScene(),
+            'battle': new BattleScene()
         }
-        this.pushScene('splash');
+        this.pushScene('battle');
     }
 
     draw(){
