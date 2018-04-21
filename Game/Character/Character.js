@@ -4,17 +4,27 @@ class Character {
         this.allCards = [];
         this.usedCards = [];
 
+        let bodyAttachments =  [
+            {position:{x:0,y:30}, rotation:0},
+            {position:{x:20,y:-15 },rotation: Math.PI},
+            {position:{x:0,y:-30 },rotation: Math.PI},
+            {position:{x:-20,y:-15 },rotation: Math.PI},
+        ];
 
         this.body = this.addCard(new Head(0,0,'head2',[
-            this.addCard(new Tail(0,50,'tail2'),'tail2'),
+            this.addCard(new Tail(bodyAttachments[0],'tail2'),'tail2'),
+            this.addCard(new Eye(bodyAttachments[1],'eye1'),'eye1'),
+            this.addCard(new Eye(bodyAttachments[2],'eye1'),'eye1'),
+            this.addCard(new Eye(bodyAttachments[3],'eye1'),'eye1'),
             //new Eye(0,-20, 'eyeProto')
-        ]),'head2');
+        ],bodyAttachments),'head2');
 
         
         this.position = {x:100,y:100}
         this.rotation = 0;
         this.editMode = false;
         this.collider = undefined;
+
     }
 
     draw(){
@@ -38,15 +48,21 @@ class Character {
     }
 
     addCard(item, type){
-        let id = type+new Date().getTime();
-        this.allCards.push({id, card:AllCards.Cards[type]});
-        this.usedCards.push({id, card:AllCards.Cards[type]});
+        let id = type+new Date().getTime()+Math.floor(Math.random()*100);
+        let card = JSON.parse(JSON.stringify(AllCards.Cards[type]))
+        this.allCards.push({id, card});
+        this.usedCards.push({id, card});
+        item.id = id;
         return item
+    }
+
+    useExistingCard(item){
+        this.usedCards.push(item);
     }
 
     handleControls(movements){
         
-        if(this.editMode) return;
+        //if(this.editMode) return;
         
         if (keyDown(LEFT_ARROW)){
             this.rotation -= 0.05;
@@ -59,6 +75,15 @@ class Character {
             let yChange = 2*Math.cos(this.rotation);
                 this.position.x = this.position.x + xChange;
                 this.position.y = this.position.y - yChange;
+            
+            
+            movements.forward = true;
+        }
+        if (keyDown(DOWN_ARROW)){
+            let xChange = 2*Math.sin(this.rotation);
+            let yChange = 2*Math.cos(this.rotation);
+                this.position.x = this.position.x - xChange;
+                this.position.y = this.position.y + yChange;
             
             
             movements.forward = true;

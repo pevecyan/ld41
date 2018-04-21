@@ -1,6 +1,6 @@
 class Tail extends BodyPart{
-    constructor(x,y, type, parts = []){
-        super(x,y, type);
+    constructor(parentAttachPoint, type, parts = []){
+        super(parentAttachPoint.position.x,parentAttachPoint.position.y, type);
         
 
 
@@ -11,8 +11,10 @@ class Tail extends BodyPart{
         this.sprite.addImage(loadImage(this.type.asset));
         this.sprite.debug = true;
 
-        this.position = {x,y};
+        this.position = parentAttachPoint.position;
         this.rotation = 0;
+
+        this.parentAttachPoint = parentAttachPoint;
 
         this.parts = parts;
 
@@ -37,7 +39,7 @@ class Tail extends BodyPart{
         push();
         //translate(this.position.x, this.position.y);
 
-        this.translateSprite(this.position.x-this.type.attachPoint.x, this.position.y-this.type.attachPoint.y);
+        this.translateSprite(this.position.x, this.position.y)
 
         if (movements.forward){
             if (this.direction < 0) {
@@ -57,8 +59,8 @@ class Tail extends BodyPart{
         this.rotation = Math.min(1, Math.max(-1, this.rotation));
         
         
-        rotate(this.rotation);
-        this.translateSprite(this.type.attachPoint.x, this.type.attachPoint.y)
+        rotate(this.rotation + this.parentAttachPoint.rotation);
+        this.translateSprite(this.type.attachPoint.x, this.type.attachPoint.y);
         this.handleOverlap()
         
 
@@ -103,7 +105,10 @@ class Tail extends BodyPart{
         }
     }
 
-    setParent(parent){this.parent = parent}
+    setParent(parent){
+        this.parent = parent;
+        this.parent.useAttachPoint(this.parentAttachPoint);
+    }
 
     updateCollider(collider, onItemClick){
         this.collider = collider;
