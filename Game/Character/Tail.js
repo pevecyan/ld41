@@ -29,9 +29,9 @@ class Tail extends BodyPart{
 
         if (movements.forward){
             if (this.direction < 0) {
-                this.rotation += 0.05*(1.5+Math.random()*2);
+                this.rotation += 0.05*(1.5+Math.random()*2)+Math.abs(deltaRotation);
             } else if(this.direction > 0) {
-                this.rotation -= 0.05*(1.5+Math.random()*2);
+                this.rotation -= 0.05*(1.5+Math.random()*2)+Math.abs(deltaRotation);
             }
             if (this.rotation < -0.7) {
                 this.direction = -1;
