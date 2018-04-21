@@ -1,4 +1,3 @@
-
 class WorldScene extends Scene{
 
     constructor(){
@@ -19,8 +18,11 @@ class WorldScene extends Scene{
     }
 
     keyPressed(){
-        if (keyCode == 69){
+        if(keyCode == 69){
             engine.scenesManager.pushNewScene(new EditorScene(this.character));
+        }
+        if(keyCode == 66){
+            engine.scenesManager.pushNewScene(new BattleScene(this.character));
         }
     }
 }
