@@ -72,7 +72,7 @@ class Character {
 
     handleControls(movements){
         
-        //if(this.editMode) return;
+        if(this.editMode) return;
         
         if (keyDown(LEFT_ARROW)){
             this.rotation -= 0.05;
