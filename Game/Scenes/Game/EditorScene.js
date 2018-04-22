@@ -3,7 +3,9 @@ class EditorScene extends Scene{
     constructor(character){
         super();
         this.character = character;
-        this.character.position = {x:0, y:0};
+        this.character.position = {x:0, y:-100};
+        this.character.rotation = 0;
+        this.character.body.resetPosition();
         this.character.editMode = true;
 
         this.mouseCollider = createSprite(0,0);
@@ -53,7 +55,9 @@ class EditorScene extends Scene{
         this.updateAvailableItems();
         this.itemForRemoval = undefined;
     }
-
+    unloaded(){
+        this.character.position = {x:this.width()/2, y:this.height()/2};
+    }
 
     loaded(){
         this.pg = createGraphics(100, 100);
@@ -76,9 +80,10 @@ class EditorScene extends Scene{
         
         
         push();
+        
         this.storeCollider();
         this.mouseCollider.position.x = this.mouseCollider.position.x - this.width()/2;
-        this.mouseCollider.position.y = this.mouseCollider.position.y - this.height()/2;
+        this.mouseCollider.position.y = this.mouseCollider.position.y - this.height()/2 +100;
         
         translate(this.width()/2.0, this.height()/2.0 )
         this.character.draw();
@@ -89,7 +94,7 @@ class EditorScene extends Scene{
         drawSprite(this.mouseCollider);
 
         if (this.itemOnMouse){
-            let nearestAttachPoint = this.character.body.getNearestUnusedPoint(mouseX - this.width()/2.0 ,mouseY - this.height()/2.0); 
+            let nearestAttachPoint = this.character.body.getNearestUnusedPoint(mouseX - this.width()/2.0 ,mouseY - this.height()/2.0 +100); 
             //console.log(nearestAttachPoint.distance);
 
             if(nearestAttachPoint && nearestAttachPoint.distance < 25){
@@ -103,7 +108,7 @@ class EditorScene extends Scene{
                 }
                 else {
                     this.itemOnMouse.sprite.position.x =  + this.width()/2.0 + nearestAttachPoint.offset.x +this.itemOnMouse.card.card.attachPoint.x;
-                    this.itemOnMouse.sprite.position.y = +this.height()/2.0 + nearestAttachPoint.offset.y + this.itemOnMouse.card.card.attachPoint.y;
+                    this.itemOnMouse.sprite.position.y = +this.height()/2.0 -   100+ nearestAttachPoint.offset.y + this.itemOnMouse.card.card.attachPoint.y;
                     
                 }
                 
@@ -174,6 +179,12 @@ class EditorScene extends Scene{
             this.mouseCollider.position.x = this.oldColliderPosotion.x;
             this.mouseCollider.position.y = this.oldColliderPosotion.y;
 
+        }
+    }
+
+    keyPressed(){
+        if (keyCode == 8){ //Space
+            engine.scenesManager.popScene();
         }
     }
 }

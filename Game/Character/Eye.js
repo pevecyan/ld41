@@ -34,6 +34,11 @@ class Eye extends BodyPart{
         drawSprite(this.sprite);
         pop();
 
+        if (engine.scenesManager.isSceneType(EditorScene)){
+        fill(255,255,255,200);
+        ellipse(-this.type.attachPoint.x, -this.type.attachPoint.y, 10)
+        }
+
         this.parts.forEach(part=>{
             part.draw();
         })

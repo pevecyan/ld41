@@ -17,6 +17,8 @@ class Head extends AttachmantPart{
             p.setParent(this);
         })
 
+        this.position = {x:0,y:0}
+        this.rotation = 0;
 
         this.scale = 1;;
 
@@ -34,7 +36,7 @@ class Head extends AttachmantPart{
         pop();
 
         if (this.visibleAttachPoints){
-            this.getUnusedAttachPoints().forEach(p=>{
+            this.getUnusedAttachPoints(false).forEach(p=>{
                 push();
                 fill(255);
                 translate(p.position.x, p.position.y)

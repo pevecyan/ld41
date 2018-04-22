@@ -66,13 +66,17 @@ class Body extends AttachmantPart{
         pop();
 
         if (this.visibleAttachPoints){
-            this.getUnusedAttachPoints().forEach(p=>{
+            this.getUnusedAttachPoints(false).forEach(p=>{
                 push();
                 fill(255);
                 translate(p.position.x, p.position.y)
                 ellipse(0,0,10);
                 pop();
             })
+        }
+        if (engine.scenesManager.isSceneType(EditorScene)){
+        fill(255,255,255,200);
+        ellipse(-this.type.attachPoint.x, -this.type.attachPoint.y, 10)
         }
 
         this.parts.forEach(part=>{

@@ -9,7 +9,7 @@ class Tail extends BodyPart{
 
         this.sprite = createSprite(0,0);
         this.sprite.addImage(loadImage(this.type.asset));
-        this.sprite.debug = true;
+        this.sprite.debug = false;
 
         this.rotation = 0;
 
@@ -49,6 +49,7 @@ class Tail extends BodyPart{
         
         rotate(this.rotation + this.parentAttachPoint.rotation);
         this.translateSprite(this.type.attachPoint.x, this.type.attachPoint.y);
+        
         this.handleOverlap()
         
 
@@ -56,6 +57,12 @@ class Tail extends BodyPart{
         scale(this.scale);
         drawSprite(this.sprite);
         pop();
+
+        if (engine.scenesManager.isSceneType(EditorScene)){
+            fill(255,255,255,200);
+            ellipse(-this.type.attachPoint.x, -this.type.attachPoint.y, 10)
+        }
+        
 
         this.parts.forEach(part=>{
             part.draw();

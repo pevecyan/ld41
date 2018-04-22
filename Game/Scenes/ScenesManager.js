@@ -37,5 +37,9 @@ class ScenesManager {
             this.scenesStack[this.scenesStack.length-1].keyPressed();
         }
     }
+
+    isSceneType(type){
+        return this.scenesStack[this.scenesStack.length-1] instanceof type;
+    }
 }
 

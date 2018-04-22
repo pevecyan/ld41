@@ -17,14 +17,14 @@ class Character {
             //this.addCard(new Tail(bodyAttachments[0],'tail2'),'tail2'),
             this.addCard(new Body(bodyAttachments[0],'body1',[
                 this.addCard(new Tail(AllCards.Cards['body1'].attachments[0],'tail2'),'tail2'),
-                this.addCard(new Tail(AllCards.Cards['body1'].attachments[1],'tail2'),'tail2'),
-                this.addCard(new Tail(AllCards.Cards['body1'].attachments[2],'tail2'),'tail2'),
-                this.addCard(new Tail(AllCards.Cards['body1'].attachments[3],'tail2'),'tail2'),
-                this.addCard(new Tail(AllCards.Cards['body1'].attachments[4],'tail2'),'tail2'),
+                //this.addCard(new Tail(AllCards.Cards['body1'].attachments[1],'tail2'),'tail2'),
+                //this.addCard(new Tail(AllCards.Cards['body1'].attachments[2],'tail2'),'tail2'),
+                //this.addCard(new Tail(AllCards.Cards['body1'].attachments[3],'tail2'),'tail2'),
+                //this.addCard(new Tail(AllCards.Cards['body1'].attachments[4],'tail2'),'tail2'),
             ],AllCards.Cards['body1'].attachments),'body1',),
-            this.addCard(new Eye(bodyAttachments[1],'eye1'),'eye1'),
-            this.addCard(new Eye(bodyAttachments[2],'eye1'),'eye1'),
-            this.addCard(new Eye(bodyAttachments[3],'eye1'),'eye1'),
+           // this.addCard(new Eye(bodyAttachments[1],'eye1'),'eye1'),
+            //this.addCard(new Eye(bodyAttachments[2],'eye1'),'eye1'),
+            //this.addCard(new Eye(bodyAttachments[3],'eye1'),'eye1'),
             
             //new Eye(0,-20, 'eyeProto')
         ],bodyAttachments),'head2');
@@ -52,7 +52,7 @@ class Character {
 
         }
         translate(this.position.x, this.position.y);
-        rotate(this.rotation)
+        rotate(this.rotation);
         this.body.draw(-deltaRotation, movements);
         pop();
     }

@@ -9,8 +9,16 @@ class AttachmantPart extends BodyPart{
     }
 
     handleOverlap(){
+
+        
+
+
         if (this.collider && this.parts.length == 0){
-            if (this.collider.overlap(this.sprite)){
+            let distance =  Math.sqrt(
+                Math.pow((-this.type.attachPoint.x-this.collider.position.x),2)+
+                Math.pow(-this.type.attachPoint.y-this.collider.position.y,2)
+            )
+            if (distance< 25){
                 if (mouseIsPressed){this.mousePressedOn = true; }
                 if (!mouseIsPressed && this.mousePressedOn)  this.onItemClick(this);
                 this.onMouseOver();
@@ -50,17 +58,19 @@ class AttachmantPart extends BodyPart{
     }
 
     
-    getUnusedAttachPoints(){
+    getUnusedAttachPoints(children=true){
         let points = this.attachPoints.filter(a=>this.usedAttachPoints.indexOf(a)==-1).map(a=>{
             a.owner = this;
             return a;    
         });
-
-        this.parts.forEach(p=>{
-            if (p instanceof AttachmantPart){
-                points = points.concat(p.getUnusedAttachPoints());
-            }
-        })
+        if (children){
+            this.parts.forEach(p=>{
+                if (p instanceof AttachmantPart){
+                    points = points.concat(p.getUnusedAttachPoints());
+                }
+            })
+        }
+        
         return points;
     }
     freeAttachPoint(ap){
@@ -83,8 +93,12 @@ class AttachmantPart extends BodyPart{
                 offset.y = offset.y + a.owner.type.attachPoint.y + a.owner.parentAttachPoint.position.y;
                 
             } 
-            fill(0)
-                ellipse(offset.x+100, offset.y+100, 20)
+            push();
+           
+                fill(255);
+                translate(a.position.x+100, a.position.y+100)
+                ellipse(0,0,10);
+                pop();
             return {
                 offset,
                 attachPoint: a,
@@ -96,6 +110,8 @@ class AttachmantPart extends BodyPart{
 
 
     }
+
+    
 
     addPart(item, point){
        // this.usedAttachPoints.push(point.attachPoint);
@@ -121,5 +137,7 @@ class AttachmantPart extends BodyPart{
         this.updateCollider(this.collider, this.onItemClick);
         //
     }
+
+    
 
 }
